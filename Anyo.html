@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anyo CV Maker Pro</title>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+:root{
+  --primary:#6c4cff;
+  --primary2:#8b5cf6;
+  --dark:#111827;
+  --muted:#6b7280;
+  --bg:#f3f5f9;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --success:#16a34a;
+  --danger:#dc2626;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--dark);
+}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.topbar{
+  height:72px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 25px;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:21px;
+  font-weight:800;
+}
+
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:10px;
+}
+
+.logo{
+  width:43px;
+  height:43px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  box-shadow:0 7px 18px rgba(108,76,255,.25);
+}
+
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:10px;
+}
+
+.btn{
+  border:0;
+  padding:10px 15px;
+  border-radius:9px;
+  font-weight:700;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:white;
+}
+
+.btn-dark{
+  background:#111827;
+  color:white;
+}
+
+.btn-light{
+  background:#f3f4f6;
+  color:#111827;
+}
+
+.btn-success{
+  background:var(--success);
+  color:white;
+}
+
+.btn-danger{
+  background:var(--danger);
+  color:white;
+}
+
+.app{
+  display:grid;
+  grid-template-columns:390px 1fr;
+  min-height:calc(100vh - 72px);
+}
+
+.sidebar{
+  background:#fff;
+  border-right:1px solid var(--border);
+  padding:22px;
+  overflow:auto;
+  height:calc(100vh - 72px);
+  position:sticky;
+  top:72px;
+}
+
+.section{
+  margin-bottom:24px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:16px;
+  background:#fff;
+}
+
+.section-title{
+  font-size:16px;
+  font-weight:800;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.form-group{
+  margin-bottom:12px;
+}
+
+.form-group label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+  color:#374151;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  border:1px solid #d8dde6;
+  border-radius:8px;
+  padding:10px 11px;
+  outline:none;
+  background:#fff;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(108,76,255,.1);
+}
+
+textarea{
+  resize:vertical;
+  min-height:80px;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.dynamic-item{
+  border:1px solid #e5e7eb;
+  background:#fafafa;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  position:relative;
+}
+
+.remove-btn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  border:0;
+  width:26px;
+  height:26px;
+  border-radius:7px;
+  background:#fee2e2;
+  color:#dc2626;
+  font-weight:bold;
+}
+
+.add-btn{
+  width:100%;
+  border:1px dashed #b9aefc;
+  color:var(--primary);
+  background:#f8f7ff;
+  padding:9px;
+  border-radius:8px;
+  font-weight:700;
+}
+
+.photo-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.photo-preview{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #eee;
+  background:#f3f4f6;
+}
+
+.color-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.color{
+  width:31px;
+  height:31px;
+  border-radius:50%;
+  border:3px solid white;
+  box-shadow:0 0 0 1px #ddd;
+  cursor:pointer;
+}
+
+.workspace{
+  padding:30px;
+  overflow:auto;
+}
+
+.preview-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  max-width:850px;
+  margin:0 auto 18px;
+}
+
+.preview-toolbar h2{
+  font-size:18px;
+}
+
+.cv-wrap{
+  display:flex;
+  justify-content:center;
+}
+
+.cv{
+  width:794px;
+  min-height:1123px;
+  background:white;
+  box-shadow:0 10px 35px rgba(0,0,0,.12);
+  color:#222;
+  position:relative;
+}
+
+.cv-header{
+  background:var(--primary);
+  color:white;
+  padding:32px;
+  display:flex;
+  gap:24px;
+  align-items:center;
+}
+
+.cv-photo{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid rgba(255,255,255,.85);
+  display:none;
+}
+
+.cv-header-info{
+  flex:1;
+}
+
+.cv-name{
+  font-size:32px;
+  font-weight:900;
+  line-height:1.1;
+}
+
+.cv-job{
+  font-size:16px;
+  margin-top:7px;
+  opacity:.9;
+}
+
+.cv-contact{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 18px;
+  margin-top:15px;
+  font-size:11px;
+}
+
+.cv-body{
+  display:grid;
+  grid-template-columns:235px 1fr;
+}
+
+.cv-left{
+  background:#f7f7fb;
+  padding:25px 22px;
+}
+
+.cv-right{
+  padding:25px 28px;
+}
+
+.cv-section{
+  margin-bottom:24px;
+}
+
+.cv-section-title{
+  color:var(--primary);
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-weight:900;
+  border-bottom:2px solid var(--primary);
+  padding-bottom:6px;
+  margin-bottom:12px;
+}
+
+.cv-summary{
+  font-size:12px;
+  line-height:1.7;
+  color:#444;
+}
+
+.cv-item{
+  margin-bottom:17px;
+}
+
+.cv-item-title{
+  font-size:13px;
+  font-weight:800;
+}
+
+.cv-item-sub{
+  color:var(--primary);
+  font-size:11px;
+  font-weight:700;
+  margin-top:3px;
+}
+
+.cv-item-date{
+  color:#777;
+  font-size:10px;
+  margin-top:3px;
+}
+
+.cv-item-desc{
+  font-size:11px;
+  line-height:1.55;
+  color:#555;
+  margin-top:5px;
+}
+
+.skill{
+  margin-bottom:10px;
+}
+
+.skill-head{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  margin-bottom:4px;
+}
+
+.skill-bar{
+  height:6px;
+  background:#ddd;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.skill-fill{
+  height:100%;
+  background:var(--primary);
+  border-radius:20px;
+}
+
+.tag-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+}
+
+.tag{
+  padding:5px 8px;
+  background:#e9e7ff;
+  color:#5140bd;
+  border-radius:5px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.empty{
+  color:#aaa;
+  font-size:11px;
+  font-style:italic;
+}
+
+.template-modern .cv-header{
+  border-bottom:7px solid rgba(0,0,0,.12);
+}
+
+.template-classic .cv-header{
+  background:#fff;
+  color:#111;
+  border-bottom:3px solid var(--primary);
+}
+
+.template-classic .cv-photo{
+  border-color:var(--primary);
+}
+
+.template-classic .cv-contact{
+  color:#555;
+}
+
+.template-minimal .cv-header{
+  background:#fff;
+  color:#111;
+  border-bottom:1px solid #ddd;
+}
+
+.template-minimal .cv-photo{
+  border-color:#ddd;
+}
+
+.template-minimal .cv-body{
+  grid-template-columns:190px 1fr;
+}
+
+/* =========================================
+   EXTRA PROFESSIONAL CV TEMPLATES
+   ========================================= */
+
+/* ATS PROFESSIONAL */
+.template-ats .cv-header{
+  background:#fff;
+  color:#111;
+  border-bottom:2px solid #111;
+  padding:28px 32px;
+}
+
+.template-ats .cv-name{
+  font-size:29px;
+  font-weight:800;
+}
+
+.template-ats .cv-job{
+  color:var(--primary);
+  font-weight:700;
+}
+
+.template-ats .cv-body{
+  grid-template-columns:1fr;
+}
+
+.template-ats .cv-left{
+  background:#fff;
+  padding:15px 32px;
+  border-bottom:1px solid #ddd;
+}
+
+.template-ats .cv-right{
+  padding:25px 32px;
+}
+
+.template-ats .cv-section-title{
+  border-bottom:1px solid #222;
+  color:#111;
+}
+
+
+/* CORPORATE */
+.template-corporate .cv-header{
+  background:var(--primary);
+  color:#fff;
+  padding:32px;
+  border-bottom:8px solid rgba(0,0,0,.15);
+}
+
+.template-corporate .cv-body{
+  grid-template-columns:210px 1fr;
+}
+
+.template-corporate .cv-left{
+  background:#f1f3f7;
+}
+
+.template-corporate .cv-section-title{
+  color:var(--primary);
+  border-bottom:2px solid var(--primary);
+}
+
+.template-corporate .cv-photo{
+  border-radius:8px;
+}
+
+
+/* EXECUTIVE */
+.template-executive .cv-header{
+  background:#111827;
+  color:#fff;
+  padding:35px;
+}
+
+.template-executive .cv-name{
+  font-size:36px;
+}
+
+.template-executive .cv-job{
+  color:#d1d5db;
+}
+
+.template-executive .cv-body{
+  grid-template-columns:220px 1fr;
+}
+
+.template-executive .cv-left{
+  background:#172033;
+  color:#fff;
+}
+
+.template-executive .cv-left .cv-section-title{
+  color:#fff;
+  border-color:rgba(255,255,255,.5);
+}
+
+
+/* CREATIVE */
+.template-creative .cv-header{
+  background:linear-gradient(135deg,var(--primary),#8b5cf6);
+  color:#fff;
+  padding:32px;
+  border-radius:0 0 25px 25px;
+}
+
+.template-creative .cv-body{
+  grid-template-columns:200px 1fr;
+}
+
+.template-creative .cv-left{
+  background:#faf7ff;
+}
+
+.template-creative .cv-section-title{
+  border:none;
+  background:#f0ebff;
+  color:var(--primary);
+  padding:7px 10px;
+  border-radius:8px;
+}
+
+
+/* ELEGANT */
+.template-elegant .cv-header{
+  background:#fff;
+  color:#111827;
+  padding:35px;
+  text-align:center;
+  border-bottom:1px solid #d4af37;
+}
+
+.template-elegant .cv-name{
+  font-family:Georgia,serif;
+  font-size:34px;
+}
+
+.template-elegant .cv-job{
+  color:#a27c20;
+}
+
+.template-elegant .cv-contact{
+  justify-content:center;
+}
+
+.template-elegant .cv-body{
+  grid-template-columns:1fr 1.7fr;
+}
+
+.template-elegant .cv-left{
+  background:#fffdf7;
+  border-right:1px solid #eee;
+}
+
+.template-elegant .cv-section-title{
+  color:#a27c20;
+  border-bottom:1px solid #d4af37;
+}
+
+
+/* TECH */
+.template-tech .cv-header{
+  background:#0f172a;
+  color:#fff;
+  padding:30px;
+  border-left:8px solid var(--primary);
+}
+
+.template-tech .cv-name{
+  font-family:monospace;
+  letter-spacing:1px;
+}
+
+.template-tech .cv-job{
+  color:#94a3b8;
+  font-family:monospace;
+}
+
+.template-tech .cv-body{
+  grid-template-columns:220px 1fr;
+}
+
+.template-tech .cv-left{
+  background:#f8fafc;
+  border-right:2px solid var(--primary);
+}
+
+.template-tech .cv-section-title{
+  font-family:monospace;
+  color:var(--primary);
+  border-bottom:2px dashed var(--primary);
+}
+
+
+/* INTERNATIONAL */
+.template-international .cv-header{
+  background:#fff;
+  color:#111;
+  padding:28px 32px;
+  border-bottom:4px solid var(--primary);
+}
+
+.template-international .cv-body{
+  grid-template-columns:250px 1fr;
+}
+
+.template-international .cv-left{
+  background:#f5f7fa;
+}
+
+.template-international .cv-right{
+  padding:30px 35px;
+}
+
+.template-international .cv-section-title{
+  color:var(--primary);
+  border-bottom:1px solid #ccc;
+}
+
+.template-international .cv-item{
+  border-left:3px solid var(--primary);
+  padding-left:12px;
+}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#111827;
+  color:#fff;
+  padding:12px 17px;
+  border-radius:9px;
+  opacity:0;
+  transform:translateY(15px);
+  pointer-events:none;
+  transition:.3s;
+  z-index:999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:500;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-card{
+  background:white;
+  width:500px;
+  max-width:100%;
+  border-radius:15px;
+  padding:22px;
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+
+.close{
+  border:0;
+  background:#f3f4f6;
+  width:32px;
+  height:32px;
+  border-radius:7px;
+}
+
+.import-area{
+  min-height:150px;
+}
+
+@media(max-width:1050px){
+  .app{
+    grid-template-columns:330px 1fr;
+  }
+
+  .cv{
+    transform-origin:top center;
+  }
+}
+
+@media(max-width:800px){
+  .topbar{
+    height:auto;
+    padding:12px;
+    gap:10px;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .app{
+    display:block;
+  }
+
+  .sidebar{
+    height:auto;
+    position:relative;
+    top:0;
+    border-right:0;
+  }
+
+  .workspace{
+    padding:15px;
+  }
+
+  .preview-toolbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .cv{
+    width:100%;
+    min-height:auto;
+  }
+}
+
+@media print{
+  body{
+    background:white;
+  }
+
+  .topbar,
+  .sidebar,
+  .preview-toolbar,
+  .toast{
+    display:none !important;
+  }
+
+  .app{
+    display:block;
+  }
+
+  .workspace{
+    padding:0;
+  }
+
+  .cv-wrap{
+    display:block;
+  }
+
+  .cv{
+    width:794px;
+    box-shadow:none;
+    margin:0;
+  }
+
+  @page{
+    size:A4;
+    margin:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="brand">
+    <!-- Anyo CV Maker Pro SVG Logo -->
+<div class="logo">
+  <img src="logo.jpg" alt="Anyo CV Maker Pro Logo">
+</div>
+    <span>Anyo CV Maker <b>Pro</b></span>
+  </div>
+
+  <div class="top-actions">
+    <button class="btn btn-light" onclick="saveCV()">💾 Save</button>
+    <button class="btn btn-light" onclick="openImport()">📂 Import</button>
+    <button class="btn btn-light" onclick="exportJSON()">⬇ JSON</button>
+    <button class="btn btn-light" onclick="shareCV()">📤 Share</button>
+    <button class="btn btn-dark" onclick="printCV()">🖨 Print</button>
+    <button class="btn btn-primary" onclick="downloadPDF()">📥 Download PDF</button>
+  </div>
+
+</header>
+
+<div class="app">
+
+<aside class="sidebar">
+
+  <div class="section">
+    <div class="section-title">👤 Personal Information</div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input id="fullName" placeholder="Muhammad Zain Ali">
+    </div>
+
+    <div class="form-group">
+      <label>Professional Title</label>
+      <input id="jobTitle" placeholder="Digital Marketing Specialist">
+    </div>
+
+    <div class="form-group">
+      <label>Professional Summary</label>
+      <textarea id="summary" placeholder="Write a short professional summary..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Profile Photo</label>
+      <div class="photo-box">
+        <img id="photoPreview" class="photo-preview" alt="">
+        <input type="file" id="photoInput" accept="image/*">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📞 Contact</div>
+
+    <div class="form-group">
+      <label>Phone</label>
+      <input id="phone" placeholder="+92 300 1234567">
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input id="email" placeholder="your@email.com">
+    </div>
+
+    <div class="form-group">
+      <label>Location</label>
+      <input id="location" placeholder="Karachi, Pakistan">
+    </div>
+
+    <div class="form-group">
+      <label>LinkedIn</label>
+      <input id="linkedin" placeholder="linkedin.com/in/yourname">
+    </div>
+
+    <div class="form-group">
+      <label>Portfolio / Website</label>
+      <input id="website" placeholder="www.yourwebsite.com">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      🎓 Education
+      <button class="btn btn-primary" onclick="addEducation()">+ Add</button>
+    </div>
+    <div id="educationList"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      💼 Work Experience
+      <button class="btn btn-primary" onclick="addExperience()">+ Add</button>
+    </div>
+    <div id="experienceList"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      🛠️ Skills
+      <button class="btn btn-primary" onclick="addSkill()">+ Add</button>
+    </div>
+    <div id="skillsList"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      🌐 Languages
+      <button class="btn btn-primary" onclick="addLanguage()">+ Add</button>
+    </div>
+    <div id="languagesList"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      🏆 Certifications
+      <button class="btn btn-primary" onclick="addCertificate()">+ Add</button>
+    </div>
+    <div id="certificationsList"></div>
+  </div>
+
+  <div class="section">
+  <div class="section-title">🎨 Design</div>
+
+  <div class="form-group">
+    <label>Template</label>
+
+    <select id="template">
+      <option value="modern">Modern</option>
+      <option value="classic">Classic</option>
+      <option value="minimal">Minimal</option>
+
+      <option value="ats">ATS Professional</option>
+      <option value="corporate">Corporate</option>
+      <option value="executive">Executive</option>
+      <option value="creative">Creative</option>
+      <option value="elegant">Elegant</option>
+      <option value="tech">Tech</option>
+      <option value="international">International</option>
+    </select>
+  </div>
+  </div>
+
+  <div class="section">
+    <button class="btn btn-danger" style="width:100%" onclick="resetCV()">
+      🗑 Reset Everything
+    </button>
+  </div>
+
+</aside>
+
+<main class="workspace">
+
+  <div class="preview-toolbar">
+    <h2>Live CV Preview</h2>
+
+    <div>
+      <button class="btn btn-light" onclick="zoomOut()">−</button>
+      <span id="zoomText">100%</span>
+      <button class="btn btn-light" onclick="zoomIn()">+</button>
+    </div>
+  </div>
+
+  <div class="cv-wrap">
+
+    <div id="cv" class="cv template-modern">
+
+      <header class="cv-header">
+
+        <img id="cvPhoto" class="cv-photo">
+
+        <div class="cv-header-info">
+          <div id="cvName" class="cv-name">Your Name</div>
+          <div id="cvJob" class="cv-job">Professional Title</div>
+
+          <div class="cv-contact">
+            <span id="cvPhone">📞 Phone</span>
+            <span id="cvEmail">✉ Email</span>
+            <span id="cvLocation">📍 Location</span>
+            <span id="cvLinkedin"></span>
+            <span id="cvWebsite"></span>
+          </div>
+        </div>
+
+      </header>
+
+      <div class="cv-body">
+
+        <aside class="cv-left">
+
+          <div class="cv-section">
+            <div class="cv-section-title">Skills</div>
+            <div id="cvSkills"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Languages</div>
+            <div id="cvLanguages"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Certifications</div>
+            <div id="cvCertificates"></div>
+          </div>
+
+        </aside>
+
+        <section class="cv-right">
+
+          <div class="cv-section">
+            <div class="cv-section-title">Profile</div>
+            <div id="cvSummary" class="cv-summary">
+              Your professional summary will appear here.
+            </div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Work Experience</div>
+            <div id="cvExperience"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Education</div>
+            <div id="cvEducation"></div>
+          </div>
+
+        </section>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+</div>
+
+<div id="toast" class="toast">Saved successfully!</div>
+
+<!-- Import Modal -->
+
+<div id="importModal" class="modal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <h3>Import CV</h3>
+      <button class="close" onclick="closeImport()">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#666;margin-bottom:10px">
+      Paste your exported JSON data here.
+    </p>
+
+    <textarea id="importText" class="import-area"></textarea>
+
+    <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="importJSON()">
+      Import CV
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   ANYO CV MAKER PRO
+   ========================================================= */
+
+let state = {
+  personal:{
+    fullName:"",
+    jobTitle:"",
+    summary:"",
+    phone:"",
+    email:"",
+    location:"",
+    linkedin:"",
+    website:"",
+    photo:""
+  },
+
+  education:[],
+
+  experience:[],
+
+  skills:[],
+
+  languages:[],
+
+  certifications:[],
+
+  template:"modern",
+
+  color:"#6c4cff"
+};
+
+let zoom = 1;
+
+/* ------------------------------
+   HELPERS
+------------------------------ */
+
+function $(id){
+  return document.getElementById(id);
+}
+
+function esc(value){
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function showToast(message){
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },2200);
+}
+
+/* ------------------------------
+   FORM DATA
+------------------------------ */
+
+const fields = [
+  "fullName",
+  "jobTitle",
+  "summary",
+  "phone",
+  "email",
+  "location",
+  "linkedin",
+  "website"
+];
+
+fields.forEach(id=>{
+  $(id).addEventListener("input",()=>{
+    state.personal[id] = $(id).value;
+    updatePreview();
+  });
+});
+
+/* ------------------------------
+   PHOTO
+------------------------------ */
+
+$("photoInput").addEventListener("change",function(){
+
+  const file = this.files[0];
+
+  if(!file) return;
+
+  if(!file.type.startsWith("image/")){
+    alert("Please select an image.");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    state.personal.photo = e.target.result;
+
+    $("photoPreview").src = e.target.result;
+
+    updatePreview();
+
+  };
+
+  reader.readAsDataURL(file);
+
+});
+
+/* ------------------------------
+   EDUCATION
+------------------------------ */
+
+function addEducation(data={}){
+
+  state.education.push({
+    degree:data.degree || "",
+    school:data.school || "",
+    year:data.year || "",
+    details:data.details || ""
+  });
+
+  renderEducation();
+  updatePreview();
+}
+
+function removeEducation(index){
+
+  state.education.splice(index,1);
+
+  renderEducation();
+  updatePreview();
+}
+
+function renderEducation(){
+
+  const box = $("educationList");
+
+  box.innerHTML = "";
+
+  state.education.forEach((item,index)=>{
+
+    box.innerHTML += `
+      <div class="dynamic-item">
+
+        <button class="remove-btn" onclick="removeEducation(${index})">×</button>
+
+        <div class="form-group">
+          <label>Degree / Qualification</label>
+          <input value="${esc(item.degree)}"
+            oninput="state.education[${index}].degree=this.value;updatePreview()"
+            placeholder="Bachelor of Computer Science">
+        </div>
+
+        <div class="form-group">
+          <label>School / University</label>
+          <input value="${esc(item.school)}"
+            oninput="state.education[${index}].school=this.value;updatePreview()"
+            placeholder="University Name">
+        </div>
+
+        <div class="form-group">
+          <label>Year</label>
+          <input value="${esc(item.year)}"
+            oninput="state.education[${index}].year=this.value;updatePreview()"
+            placeholder="2022 - 2026">
+        </div>
+
+        <div class="form-group">
+          <label>Details</label>
+          <textarea
+            oninput="state.education[${index}].details=this.value;updatePreview()"
+            placeholder="Additional information">${esc(item.details)}</textarea>
+        </div>
+
+      </div>
+    `;
+
+  });
+}
+
+/* ------------------------------
+   EXPERIENCE
+------------------------------ */
+
+function addExperience(data={}){
+
+  state.experience.push({
+    position:data.position || "",
+    company:data.company || "",
+    start:data.start || "",
+    end:data.end || "",
+    description:data.description || ""
+  });
+
+  renderExperience();
+  updatePreview();
+}
+
+function removeExperience(index){
+
+  state.experience.splice(index,1);
+
+  renderExperience();
+  updatePreview();
+}
+
+function renderExperience(){
+
+  const box = $("experienceList");
+
+  box.innerHTML = "";
+
+  state.experience.forEach((item,index)=>{
+
+    box.innerHTML += `
+      <div class="dynamic-item">
+
+        <button class="remove-btn" onclick="removeExperience(${index})">×</button>
+
+        <div class="form-group">
+          <label>Job Position</label>
+          <input value="${esc(item.position)}"
+            oninput="state.experience[${index}].position=this.value;updatePreview()"
+            placeholder="Production Supervisor">
+        </div>
+
+        <div class="form-group">
+          <label>Company</label>
+          <input value="${esc(item.company)}"
+            oninput="state.experience[${index}].company=this.value;updatePreview()"
+            placeholder="Company Name">
+        </div>
+
+        <div class="grid2">
+
+          <div class="form-group">
+            <label>Start</label>
+            <input value="${esc(item.start)}"
+              oninput="state.experience[${index}].start=this.value;updatePreview()"
+              placeholder="Jan 2024">
+          </div>
+
+          <div class="form-group">
+            <label>End</label>
+            <input value="${esc(item.end)}"
+              oninput="state.experience[${index}].end=this.value;updatePreview()"
+              placeholder="Present">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            oninput="state.experience[${index}].description=this.value;updatePreview()"
+            placeholder="Describe your responsibilities...">${esc(item.description)}</textarea>
+        </div>
+
+      </div>
+    `;
+
+  });
+}
+
+/* ------------------------------
+   SKILLS
+------------------------------ */
+
+function addSkill(data={}){
+
+  state.skills.push({
+    name:data.name || "",
+    level:data.level || 80
+  });
+
+  renderSkills();
+  updatePreview();
+}
+
+function removeSkill(index){
+
+  state.skills.splice(index,1);
+
+  renderSkills();
+  updatePreview();
+}
+
+function renderSkills(){
+
+  const box = $("skillsList");
+
+  box.innerHTML = "";
+
+  state.skills.forEach((item,index)=>{
+
+    box.innerHTML += `
+      <div class="dynamic-item">
+
+        <button class="remove-btn" onclick="removeSkill(${index})">×</button>
+
+        <div class="form-group">
+          <label>Skill</label>
+          <input value="${esc(item.name)}"
+            oninput="state.skills[${index}].name=this.value;updatePreview()"
+            placeholder="MS Office">
+        </div>
+
+        <div class="form-group">
+
+          <label>Level: ${item.level}%</label>
+
+          <input type="range"
+            min="0"
+            max="100"
+            value="${item.level}"
+            oninput="
+              state.skills[${index}].level=this.value;
+              renderSkills();
+              updatePreview();
+            ">
+
+        </div>
+
+      </div>
+    `;
+
+  });
+}
+
+/* ------------------------------
+   LANGUAGES
+------------------------------ */
+
+function addLanguage(data={}){
+
+  state.languages.push({
+    name:data.name || "",
+    level:data.level || "Professional"
+  });
+
+  renderLanguages();
+  updatePreview();
+}
+
+function removeLanguage(index){
+
+  state.languages.splice(index,1);
+
+  renderLanguages();
+  updatePreview();
+}
+
+function renderLanguages(){
+
+  const box = $("languagesList");
+
+  box.innerHTML = "";
+
+  state.languages.forEach((item,index)=>{
+
+    box.innerHTML += `
+      <div class="dynamic-item">
+
+        <button class="remove-btn" onclick="removeLanguage(${index})">×</button>
+
+        <div class="form-group">
+          <label>Language</label>
+          <input value="${esc(item.name)}"
+            oninput="state.languages[${index}].name=this.value;updatePreview()"
+            placeholder="English">
+        </div>
+
+        <div class="form-group">
+          <label>Level</label>
+
+          <select
+            onchange="state.languages[${index}].level=this.value;updatePreview()">
+
+            <option ${item.level==="Basic"?"selected":""}>Basic</option>
+            <option ${item.level==="Intermediate"?"selected":""}>Intermediate</option>
+            <option ${item.level==="Professional"?"selected":""}>Professional</option>
+            <option ${item.level==="Native"?"selected":""}>Native</option>
+
+          </select>
+
+        </div>
+
+      </div>
+    `;
+
+  });
+}
+
+/* ------------------------------
+   CERTIFICATIONS
+------------------------------ */
+
+function addCertificate(data={}){
+
+  state.certifications.push({
+    name:data.name || "",
+    issuer:data.issuer || "",
+    year:data.year || ""
+  });
+
+  renderCertificates();
+  updatePreview();
+}
+
+function removeCertificate(index){
+
+  state.certifications.splice(index,1);
+
+  renderCertificates();
+  updatePreview();
+}
+
+function renderCertificates(){
+
+  const box = $("certificationsList");
+
+  box.innerHTML = "";
+
+  state.certifications.forEach((item,index)=>{
+
+    box.innerHTML += `
+      <div class="dynamic-item">
+
+        <button class="remove-btn" onclick="removeCertificate(${index})">×</button>
+
+        <div class="form-group">
+          <label>Certificate</label>
+          <input value="${esc(item.name)}"
+            oninput="state.certifications[${index}].name=this.value;updatePreview()"
+            placeholder="Google Digital Marketing">
+        </div>
+
+        <div class="form-group">
+          <label>Issuer</label>
+          <input value="${esc(item.issuer)}"
+            oninput="state.certifications[${index}].issuer=this.value;updatePreview()"
+            placeholder="Google">
+        </div>
+
+        <div class="form-group">
+          <label>Year</label>
+          <input value="${esc(item.year)}"
+            oninput="state.certifications[${index}].year=this.value;updatePreview()"
+            placeholder="2025">
+        </div>
+
+      </div>
+    `;
+
+  });
+}
+
+/* ------------------------------
+   PREVIEW
+------------------------------ */
+
+function updatePreview(){
+
+  const p = state.personal;
+
+  $("cvName").textContent = p.fullName || "Your Name";
+  $("cvJob").textContent = p.jobTitle || "Professional Title";
+
+  $("cvPhone").textContent = p.phone ? "📞 " + p.phone : "";
+  $("cvEmail").textContent = p.email ? "✉ " + p.email : "";
+  $("cvLocation").textContent = p.location ? "📍 " + p.location : "";
+
+  $("cvLinkedin").textContent = p.linkedin ? "🔗 " + p.linkedin : "";
+  $("cvWebsite").textContent = p.website ? "🌐 " + p.website : "";
+
+  $("cvSummary").textContent =
+    p.summary ||
+    "Your professional summary will appear here.";
+
+  /* Photo */
+
+  if(p.photo){
+
+    $("cvPhoto").src = p.photo;
+    $("cvPhoto").style.display = "block";
+
+  }else{
+
+    $("cvPhoto").style.display = "none";
+
+  }
+
+  /* Experience */
+
+  let experienceHTML = "";
+
+  state.experience.forEach(item=>{
+
+    if(!item.position && !item.company) return;
+
+    experienceHTML += `
+      <div class="cv-item">
+
+        <div class="cv-item-title">
+          ${esc(item.position || "Position")}
+        </div>
+
+        <div class="cv-item-sub">
+          ${esc(item.company || "Company")}
+        </div>
+
+        <div class="cv-item-date">
+          ${esc(item.start)}
+          ${item.start || item.end ? " — " : ""}
+          ${esc(item.end)}
+        </div>
+
+        ${
+          item.description
+          ? `<div class="cv-item-desc">${esc(item.description)}</div>`
+          : ""
+        }
+
+      </div>
+    `;
+
+  });
+
+  $("cvExperience").innerHTML =
+    experienceHTML ||
+    `<div class="empty">No experience added yet.</div>`;
+
+  /* Education */
+
+  let educationHTML = "";
+
+  state.education.forEach(item=>{
+
+    if(!item.degree && !item.school) return;
+
+    educationHTML += `
+      <div class="cv-item">
+
+        <div class="cv-item-title">
+          ${esc(item.degree || "Qualification")}
+        </div>
+
+        <div class="cv-item-sub">
+          ${esc(item.school || "Institution")}
+        </div>
+
+        <div class="cv-item-date">
+          ${esc(item.year)}
+        </div>
+
+        ${
+          item.details
+          ? `<div class="cv-item-desc">${esc(item.details)}</div>`
+          : ""
+        }
+
+      </div>
+    `;
+
+  });
+
+  $("cvEducation").innerHTML =
+    educationHTML ||
+    `<div class="empty">No education added yet.</div>`;
+
+  /* Skills */
+
+  let skillsHTML = "";
+
+  state.skills.forEach(item=>{
+
+    if(!item.name) return;
+
+    skillsHTML += `
+      <div class="skill">
+
+        <div class="skill-head">
+          <span>${esc(item.name)}</span>
+          <span>${item.level}%</span>
+        </div>
+
+        <div class="skill-bar">
+          <div class="skill-fill"
+            style="width:${item.level}%">
+          </div>
+        </div>
+
+      </div>
+    `;
+
+  });
+
+  $("cvSkills").innerHTML =
+    skillsHTML ||
+    `<div class="empty">No skills added yet.</div>`;
+
+  /* Languages */
+
+  let languagesHTML = "";
+
+  state.languages.forEach(item=>{
+
+    if(!item.name) return;
+
+    languagesHTML += `
+      <div class="tag" style="margin-bottom:5px">
+        ${esc(item.name)} — ${esc(item.level)}
+      </div>
+    `;
+
+  });
+
+  $("cvLanguages").innerHTML =
+    languagesHTML ||
+    `<div class="empty">No languages added yet.</div>`;
+
+  /* Certificates */
+
+  let certificatesHTML = "";
+
+  state.certifications.forEach(item=>{
+
+    if(!item.name) return;
+
+    certificatesHTML += `
+      <div class="cv-item">
+
+        <div class="cv-item-title">
+          ${esc(item.name)}
+        </div>
+
+        <div class="cv-item-sub">
+          ${esc(item.issuer)}
+        </div>
+
+        <div class="cv-item-date">
+          ${esc(item.year)}
+        </div>
+
+      </div>
+    `;
+
+  });
+
+  $("cvCertificates").innerHTML =
+    certificatesHTML ||
+    `<div class="empty">No certifications added yet.</div>`;
+
+  /* Template */
+
+  $("cv").className =
+    "cv template-" + state.template;
+
+  /* Color */
+
+  document.documentElement.style.setProperty(
+    "--primary",
+    state.color
+  );
+
+}
+
+/* ------------------------------
+   TEMPLATE
+------------------------------ */
+
+$("template").addEventListener("change",function(){
+
+  state.template = this.value;
+
+  updatePreview();
+
+});
+
+/* ------------------------------
+   COLOR
+------------------------------ */
+
+document.querySelectorAll(".color").forEach(color=>{
+
+  color.addEventListener("click",()=>{
+
+    state.color = color.dataset.color;
+
+    document.documentElement.style.setProperty(
+      "--primary",
+      state.color
+    );
+
+    updatePreview();
+
+  });
+
+});
+
+/* ------------------------------
+   SAVE
+------------------------------ */
+
+function saveCV(){
+
+  localStorage.setItem(
+    "anyoCVMakerData",
+    JSON.stringify(state)
+  );
+
+  showToast("CV saved successfully!");
+
+}
+
+/* ------------------------------
+   LOAD
+------------------------------ */
+
+function loadCV(){
+
+  const saved =
+    localStorage.getItem("anyoCVMakerData");
+
+  if(!saved) return;
+
+  try{
+
+    state = JSON.parse(saved);
+
+    loadStateToForm();
+
+    showToast("Saved CV loaded!");
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+function loadStateToForm(){
+
+  fields.forEach(id=>{
+    $(id).value = state.personal[id] || "";
+  });
+
+  if(state.personal.photo){
+    $("photoPreview").src = state.personal.photo;
+  }
+
+  $("template").value =
+    state.template || "modern";
+
+  document.documentElement.style.setProperty(
+    "--primary",
+    state.color || "#6c4cff"
+  );
+
+  renderEducation();
+  renderExperience();
+  renderSkills();
+  renderLanguages();
+  renderCertificates();
+
+  updatePreview();
+
+}
+
+/* ------------------------------
+   RESET
+------------------------------ */
+
+function resetCV(){
+
+  const confirmReset =
+    confirm("Are you sure you want to reset everything?");
+
+  if(!confirmReset) return;
+
+  localStorage.removeItem("anyoCVMakerData");
+
+  state = {
+    personal:{
+      fullName:"",
+      jobTitle:"",
+      summary:"",
+      phone:"",
+      email:"",
+      location:"",
+      linkedin:"",
+      website:"",
+      photo:""
+    },
+    education:[],
+    experience:[],
+    skills:[],
+    languages:[],
+    certifications:[],
+    template:"modern",
+    color:"#6c4cff"
+  };
+
+  $("photoPreview").src = "";
+
+  loadStateToForm();
+
+  showToast("CV reset successfully!");
+
+}
+
+/* ------------------------------
+   PDF
+------------------------------ */
+
+async function downloadPDF(){
+
+  const element = $("cv");
+
+  if(typeof html2pdf === "undefined"){
+
+    alert(
+      "PDF library could not load. Use the Print button and choose Save as PDF."
+    );
+
+    return;
+
+  }
+
+  const name =
+    state.personal.fullName
+    .trim()
+    .replace(/[^a-z0-9]/gi,"-")
+    .toLowerCase() || "anyo-cv";
+
+  const options = {
+
+    margin:0,
+
+    filename:name + "-cv.pdf",
+
+    image:{
+      type:"jpeg",
+      quality:0.98
+    },
+
+    html2canvas:{
+      scale:2,
+      useCORS:true,
+      backgroundColor:"#ffffff"
+    },
+
+    jsPDF:{
+      unit:"mm",
+      format:"a4",
+      orientation:"portrait"
+    }
+
+  };
+
+  showToast("Generating PDF...");
+
+  await html2pdf()
+    .set(options)
+    .from(element)
+    .save();
+
+}
+
+/* ------------------------------
+   PRINT
+------------------------------ */
+
+function printCV(){
+
+  window.print();
+
+}
+
+/* ------------------------------
+   SHARE
+------------------------------ */
+
+async function shareCV(){
+
+  const text =
+    "I created my CV using Anyo CV Maker Pro.";
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+        title:"My CV",
+        text:text
+      });
+
+    }catch(e){}
+
+  }else{
+
+    try{
+
+      await navigator.clipboard.writeText(text);
+
+      showToast("CV sharing text copied!");
+
+    }catch(e){
+
+      alert(text);
+
+    }
+
+  }
+
+}
+
+/* ------------------------------
+   JSON EXPORT
+------------------------------ */
+
+function exportJSON(){
+
+  const json =
+    JSON.stringify(state,null,2);
+
+  const blob =
+    new Blob([json],{
+      type:"application/json"
+    });
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  const name =
+    state.personal.fullName
+    .trim()
+    .replace(/[^a-z0-9]/gi,"-")
+    .toLowerCase() || "anyo-cv";
+
+  a.download =
+    name + "-cv-data.json";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+  showToast("CV data exported!");
+
+}
+
+/* ------------------------------
+   JSON IMPORT
+------------------------------ */
+
+function openImport(){
+
+  $("importModal").classList.add("active");
+
+}
+
+function closeImport(){
+
+  $("importModal").classList.remove("active");
+
+}
+
+function importJSON(){
+
+  const text =
+    $("importText").value.trim();
+
+  if(!text){
+
+    alert("Please paste JSON data.");
+
+    return;
+
+  }
+
+  try{
+
+    const imported =
+      JSON.parse(text);
+
+    state = imported;
+
+    loadStateToForm();
+
+    closeImport();
+
+    showToast("CV imported successfully!");
+
+  }catch(error){
+
+    alert("Invalid JSON data.");
+
+  }
+
+}
+
+/* ------------------------------
+   ZOOM
+------------------------------ */
+
+function zoomIn(){
+
+  zoom += .1;
+
+  if(zoom > 1.5)
+    zoom = 1.5;
+
+  applyZoom();
+
+}
+
+function zoomOut(){
+
+  zoom -= .1;
+
+  if(zoom < .6)
+    zoom = .6;
+
+  applyZoom();
+
+}
+
+function applyZoom(){
+
+  $("cv").style.transform =
+    `scale(${zoom})`;
+
+  $("cv").style.transformOrigin =
+    "top center";
+
+  $("zoomText").textContent =
+    Math.round(zoom * 100) + "%";
+
+}
+
+/* ------------------------------
+   DEFAULT SAMPLE DATA
+------------------------------ */
+
+function addSampleData(){
+
+  if(
+    state.personal.fullName ||
+    state.experience.length ||
+    state.education.length
+  ){
+    return;
+  }
+
+  state.personal = {
+
+    fullName:"Your Name",
+
+    jobTitle:"Professional Job Title",
+
+    summary:
+      "Motivated and professional individual with strong communication, organizational and technical skills. Experienced in working within professional environments and focused on delivering high-quality results.",
+
+    phone:"+92 300 1234567",
+
+    email:"your@email.com",
+
+    location:"Karachi, Pakistan",
+
+    linkedin:"linkedin.com/in/yourname",
+
+    website:"www.yourwebsite.com",
+
+    photo:""
+
+  };
+
+  state.education = [
+
+    {
+      degree:"Intermediate",
+      school:"Your College",
+      year:"2020 - 2022",
+      details:"Relevant academic background."
+    }
+
+  ];
+
+  state.experience = [
+
+    {
+      position:"Production / Line Incharge",
+      company:"Company Name",
+      start:"2023",
+      end:"Present",
+      description:
+        "Managed daily operations, coordinated team activities and maintained quality and productivity standards."
+    }
+
+  ];
+
+  state.skills = [
+
+    {
+      name:"MS Office",
+      level:85
+    },
+
+    {
+      name:"Team Management",
+      level:90
+    },
+
+    {
+      name:"Communication",
+      level:85
+    },
+
+    {
+      name:"Problem Solving",
+      level:80
+    }
+
+  ];
+
+  state.languages = [
+
+    {
+      name:"English",
+      level:"Professional"
+    },
+
+    {
+      name:"Urdu",
+      level:"Native"
+    }
+
+  ];
+
+  state.certifications = [
+
+    {
+      name:"English Language Certificate",
+      issuer:"Training Institute",
+      year:"2025"
+    }
+
+  ];
+
+}
+
+/* ------------------------------
+   START APP
+------------------------------ */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  const saved =
+    localStorage.getItem("anyoCVMakerData");
+
+  if(saved){
+
+    loadCV();
+
+  }else{
+
+    addSampleData();
+
+    loadStateToForm();
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
